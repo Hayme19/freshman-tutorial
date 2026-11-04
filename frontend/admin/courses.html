@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Courses — A+ Freshman Tutorial</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div id="loading" hidden>Waking up the server, this can take up to a minute on the first visit.</div>
+  <div id="navbar"></div>
+
+  <div class="container" style="padding-top:2rem;padding-bottom:3rem">
+    <h1 class="section-title">Manage Courses &amp; Lessons</h1>
+
+    <!-- Create course -->
+    <div class="card mb-2">
+      <h2 style="font-size:1rem;margin-bottom:1rem">Create New Course</h2>
+      <div id="courseAlertBox"></div>
+      <div class="flex flex-wrap gap-1">
+        <div class="form-group" style="flex:1;min-width:180px;margin:0">
+          <label for="newCode">Code</label>
+          <input type="text" id="newCode" placeholder="e.g. PHYS101">
+        </div>
+        <div class="form-group" style="flex:2;min-width:220px;margin:0">
+          <label for="newTitle">Title</label>
+          <input type="text" id="newTitle" placeholder="Course title">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label for="newGroup">Group</label>
+          <select id="newGroup">
+            <option value="common">Common</option>
+            <option value="natural">Natural</option>
+            <option value="social">Social</option>
+            <option value="digital">Digital</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" id="createCourseBtn">Create</button>
+        </div>
+      </div>
+      <div class="form-group mt-1">
+        <label for="newDesc">Description</label>
+        <textarea id="newDesc" style="min-height:60px" placeholder="Optional description"></textarea>
+      </div>
+    </div>
+
+    <!-- Course list -->
+    <h2 style="font-size:1.1rem;margin-bottom:1rem">Existing Courses</h2>
+    <div id="alertBox"></div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Code</th><th>Title</th><th>Group</th><th>Published</th><th>Actions</th></tr></thead>
+        <tbody id="coursesBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Lesson editor (appears when a course is selected) -->
+    <div id="lessonEditor" hidden class="card mt-2">
+      <h2 id="lessonEditorTitle" style="font-size:1rem;margin-bottom:1rem">Lessons</h2>
+      <div id="lessonList" class="mb-2"></div>
+      <h3 style="font-size:.95rem;margin-bottom:.75rem">Add Lesson</h3>
+      <div class="flex flex-wrap gap-1">
+        <div class="form-group" style="flex:2;min-width:180px;margin:0">
+          <label for="lessonTitle">Title</label>
+          <input type="text" id="lessonTitle" placeholder="Lesson title">
+        </div>
+        <div class="form-group" style="flex:1;min-width:80px;margin:0">
+          <label for="lessonUnit">Unit</label>
+          <input type="number" id="lessonUnit" value="1" min="1">
+        </div>
+        <div class="form-group" style="flex:1;min-width:80px;margin:0">
+          <label for="lessonOrder">Order</label>
+          <input type="number" id="lessonOrder" value="1" min="1">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label for="lessonFree">Free?</label>
+          <input type="checkbox" id="lessonFree" style="width:auto;margin-top:.55rem">
+        </div>
+      </div>
+      <div class="form-group mt-1">
+        <label for="lessonContent">Content</label>
+        <textarea id="lessonContent" style="min-height:120px" placeholder="Lesson text (supports KaTeX math via $...$ markers)"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="lessonCode">Code example</label>
+        <textarea id="lessonCode" style="min-height:80px;font-family:monospace;font-size:.85rem" placeholder="Optional code example for the playground"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="lessonVideo">Video URL</label>
+        <input type="url" id="lessonVideo" placeholder="https://youtube.com/...">
+      </div>
+      <button class="btn btn-primary" id="addLessonBtn">Add Lesson</button>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 <strong>Haymanot Andarg Wubale</strong>. All rights reserved.</p>
+    <p class="footer-tagline">Built with <span class="heart">&#10084;</span> in Bahir Dar, Ethiopia</p>
+  </footer>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin/courses.js"></script>
+</body>
+</html>

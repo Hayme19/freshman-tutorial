@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — A+ Freshman Tutorial</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="loading" hidden>Waking up the server, this can take up to a minute on the first visit.</div>
+  <div id="navbar"></div>
+
+  <div class="container" style="padding-top:2rem;padding-bottom:3rem">
+    <h1 class="section-title">Reports &amp; Analytics</h1>
+
+    <!-- Summary stats -->
+    <div class="stat-grid mb-2">
+      <div class="stat-box">
+        <div class="stat-value" id="statEnrollments">–</div>
+        <div class="stat-label">Total Enrollments</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="statCompleted">–</div>
+        <div class="stat-label">Completed Courses</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="statCompletionRate">–</div>
+        <div class="stat-label">Completion Rate</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="statAvgQuiz">–</div>
+        <div class="stat-label">Avg Quiz Score</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div class="chart-card">
+        <h2 style="font-size:1rem;margin-bottom:1rem">Active Users by Stream</h2>
+        <canvas id="streamChart" aria-label="Users by stream" role="img"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2 style="font-size:1rem;margin-bottom:1rem">Top Enrolled Courses</h2>
+        <canvas id="topCoursesChart" aria-label="Top enrolled courses" role="img"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 <strong>Haymanot Andarg Wubale</strong>. All rights reserved.</p>
+    <p class="footer-tagline">Built with <span class="heart">&#10084;</span> in Bahir Dar, Ethiopia</p>
+  </footer>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin/reports.js"></script>
+</body>
+</html>

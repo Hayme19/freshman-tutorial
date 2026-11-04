@@ -1,0 +1,18 @@
+[
+  { "code": "ENGL101", "title": "Communicative English I",    "streams": ["natural","social"], "group": "common"  },
+  { "code": "ANTH101", "title": "Social Anthropology",        "streams": ["natural","social"], "group": "common"  },
+  { "code": "EMTE101", "title": "Emerging Technologies",      "streams": ["natural","social"], "group": "common"  },
+  { "code": "GLTR101", "title": "Global Trends",              "streams": ["natural","social"], "group": "common"  },
+  { "code": "PSYC101", "title": "General Psychology",         "streams": ["natural","social"], "group": "common"  },
+  { "code": "LOCT101", "title": "Logic and Critical Thinking","streams": ["natural","social"], "group": "common"  },
+  { "code": "SPRT101", "title": "Sport (Physical Fitness)",   "streams": ["natural","social"], "group": "common"  },
+  { "code": "PHYS101", "title": "General Physics",            "streams": ["natural"],          "group": "natural" },
+  { "code": "MATH101", "title": "Mathematics for Natural Sciences","streams": ["natural"],     "group": "natural" },
+  { "code": "GEOG101", "title": "Geography",                  "streams": ["natural"],          "group": "natural" },
+  { "code": "MCEN101", "title": "Moral and Citizenship Education","streams": ["natural"],      "group": "natural" },
+  { "code": "ECON101", "title": "Economics",                  "streams": ["social"],           "group": "social"  },
+  { "code": "ENTR101", "title": "Entrepreneurship",           "streams": ["social"],           "group": "social"  },
+  { "code": "HIST101", "title": "History",                    "streams": ["social"],           "group": "social"  },
+  { "code": "INCL101", "title": "Inclusiveness",              "streams": ["social"],           "group": "social"  },
+  { "code": "WEBD101", "title": "Web Development",            "streams": ["natural","social"], "group": "digital" }
+]

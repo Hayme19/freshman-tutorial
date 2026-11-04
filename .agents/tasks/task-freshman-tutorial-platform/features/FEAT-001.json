@@ -1,0 +1,53 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Complete PHP 8.2 REST API backend under backend/ per DESIGN.md sections 10-15: composer.json with PSR-4 App->src autoloading and pinned deps (mongodb/mongodb, firebase/php-jwt, vlucas/phpdotenv); Dockerfile (section 15 verbatim); .htaccess (section 13 verbatim); full router public/index.php wiring ALL section-12 routes; Database singleton; Response/Cors/AuthMiddleware helpers; all 15 controllers implementing every endpoint; seed/courses.json (section 11.1) + seed/load.php that upserts the catalog, creates all section-10 indexes, and inserts real sample lessons/exercises/quizzes for LOCT101, MATH101, ECON101, WEBD101; .env.example. All classes live in the App namespace with PSR-4 and index.php uses use-imports.",
+  "status": "pending",
+  "steps": [
+    "Create backend/composer.json: require mongodb/mongodb, firebase/php-jwt, vlucas/phpdotenv (pinned to recent stable ranges); autoload PSR-4 mapping the App namespace to src/.",
+    "Create backend/Dockerfile verbatim from DESIGN.md section 15 (php:8.2-apache, pecl mongodb, enable rewrite+headers, composer install, doc root=public).",
+    "Create backend/.env.example documenting MONGODB_URI, DB_NAME, JWT_SECRET, FRONTEND_URL with safe placeholders and comments (no real secrets).",
+    "Create backend/public/.htaccess verbatim from DESIGN.md section 13 (rewrite all non-file requests to index.php).",
+    "Create backend/src/config/Database.php: singleton MongoDB client from MONGODB_URI + DB_NAME env vars; exposes collections users, courses, lessons, enrollments, quizzes, quizAttempts, exercises, submissions, forumPosts, announcements, notifications, certificates, fitnessLogs, logins, auditLogs; graceful connection-error handling.",
+    "Create backend/src/helpers/Response.php: static json(success, data, message, status=200) that sets Content-Type application/json and the http code and echoes {success, data, message}; must not crash if output already started.",
+    "Create backend/src/middleware/Cors.php per DESIGN 11.5: comma-separated FRONTEND_URL, exact origin match, OPTIONS returns 204 and exits.",
+    "Create backend/src/middleware/AuthMiddleware.php per DESIGN 11.4: JWT decode with JWT_SECRET HS256, role check including the 'any' role, returns the payload (sub/role/stream/exp); add a static helper to fetch the authenticated user document from the DB by sub.",
+    "Create backend/src/controllers/AuthController.php: register (validate fields, reject unexpected fields, password_hash bcrypt, unique email), login (password_verify, JWT with 24h expiry signed with JWT_SECRET, rate-limit 5 failures per 15 min per email+IP using the logins collection, return {token, user}), me (return user doc minus passwordHash).",
+    "Create backend/src/controllers/UserController.php: PUT /users/me updating whitelisted fields (fullName, avatarUrl, stream in {natural, social}).",
+    "Create backend/src/controllers/CourseController.php: list (?stream whitelisted to natural/social, ?group whitelisted to common/natural/social/digital, ?q case-insensitive regex on title/description; public/guest see isPublished=true only; instructor/admin/owner see their own regardless) per DESIGN 11.3; create (instructor/admin, validate + reject unexpected fields, set instructorId from JWT); update/delete (owner or admin).",
+    "Create backend/src/controllers/LessonController.php: GET /courses/{id}/lessons (enrolled students see all, guests/unenrolled see isFree=true lessons only, cast id in try/catch); POST /lessons and PUT /lessons/{id} (instructor/admin).",
+    "Create backend/src/controllers/EnrollmentController.php: POST /enrollments (student; create doc if none exists; unique index on studentId+courseId prevents dupes; return existing if already enrolled).",
+    "Create backend/src/controllers/ProgressController.php: POST /progress/complete-lesson ($addToSet lessonId into completedLessons, recompute progressPercent = round(count/totalLessons*100); when 100% AND final quiz passed >=50% set completedAt and create a certificate record); GET /progress/me (return the student's enrollments with progress + quiz history).",
+    "Create backend/src/controllers/QuizController.php: GET /quizzes/{id}; POST /quizzes/{id}/attempt (auto-grade MC/TF by correctIndex, record quizAttempt with score/total/answers/takenAt, return score + total).",
+    "Create backend/src/controllers/SubmissionController.php: POST /submissions (student; store code, status=pending, submittedAt); PUT /submissions/{id}/grade (instructor; set grade, feedback, status=reviewed).",
+    "Create backend/src/controllers/ForumController.php: GET /forum (?courseId) list posts; POST /forum (logged in; create post with title/body); POST /forum/{id}/reply (logged in; push reply to replies array; tutors/instructors answer).",
+    "Create backend/src/controllers/AnnouncementController.php: GET /announcements (logged in; list sorted by createdAt desc); POST /announcements (instructor/admin).",
+    "Create backend/src/controllers/AdminController.php: GET /admin/users (admin; paginated + filterable by role/search); PUT /admin/users/{id}/role (admin; validate target role in allowed set; prevent demoting the last admin).",
+    "Create backend/src/controllers/ReportController.php: GET /reports/summary (admin+instructor; aggregate enrollment counts, completion rate, avg quiz score, active users per stream).",
+    "Create backend/src/controllers/CertificateController.php: GET /certificates/{id} (return certificate doc for printing; owner or any logged-in user for their own).",
+    "Create backend/src/controllers/FitnessLogController.php: GET/POST/PUT /fitness-log (student; personal activity log for the Sport module).",
+    "Create backend/src/controllers/NotificationController.php: GET /notifications (logged in; list for the user); PUT /notifications/{id}/read (mark read).",
+    "Create optional backend/src/models/ helpers (e.g. a ObjectIdHelper) centralizing ObjectId casting in try/catch returning null on failure, and BSON-to-array serialization for JSON output (ObjectId to {$oid}, Date to ISO string).",
+    "Create backend/public/index.php: full router per DESIGN 11.2 but with ALL section-12 routes wired as [method, regex, [Controller::class, method], roles] tuples; use the App namespace + use-imports for every controller and for Cors/AuthMiddleware/Response/Dotenv; regex captures the id (e.g. #^/api/courses/([^/]+)$#) passed as args; AuthMiddleware::require(roles) for protected routes (null for public); catch exceptions and return Response::json(false, null, 'Server error', 500); final 404 fallback.",
+    "Create backend/seed/courses.json verbatim from DESIGN.md section 11.1 (16 courses).",
+    "Create backend/seed/load.php: load .env, connect via Database, upsert courses from courses.json idempotently by code (updateOne upsert), create all section-10 indexes (users.email unique, courses.streams, lessons.courseId+order, enrollments.studentId+courseId unique, quizAttempts.studentId), AND insert real sample content: LOCT101 (common) 3 lessons (Arguments and propositions; Common fallacies; Deductive vs inductive reasoning) + 1 exercise + 1 quiz of 5 TF/MC; MATH101 (natural) 3 lessons (Functions; Limits and continuity; Derivatives) with KaTeX formula examples including the limit of sin(x)/x as x approaches 0 equals 1 and derivative rules + 1 exercise + 1 quiz of 5 numeric; ECON101 (social) 3 lessons (Demand and supply; Market equilibrium; National income) + 1 exercise + 1 quiz of 5; WEBD101 (digital) 5 lessons (HTML basics; CSS Flexbox/Grid/responsive; JS DOM/events/fetch; PHP forms/sessions/REST/MongoDB; Mini project) each with a working codeExample suitable for the playground. First lesson of each course isFree=true. Print a clear summary of inserted counts.",
+    "Run backend verification: python -m json.tool on composer.json and seed/courses.json (and any seed content JSON); manual PHP syntax/structure review of every .php file (php not installed); endpoint-to-controller cross-check of every section-12 route. Fix any issues found."
+  ],
+  "acceptance_criteria": [
+    "All backend files exist and the on-disk tree matches DESIGN.md section 13 backend/ structure.",
+    "python -m json.tool validates backend/composer.json and backend/seed/courses.json without error.",
+    "Every endpoint in DESIGN.md section 12 has a matching route entry in backend/public/index.php and a corresponding controller method that exists and is autoloadable (App namespace mapped to src/).",
+    "Manual PHP review passes: balanced braces/quotes, correct class/method signatures, correct namespace + use statements, all classes referenced in index.php exist under src/.",
+    "seed/load.php is idempotent (upsert by code), creates all section-10 indexes, and inserts the specified sample lessons/exercises/quizzes for LOCT101, MATH101, ECON101, WEBD101 with first lessons isFree=true.",
+    "Auth uses password_hash/password_verify, JWT 24h signed with JWT_SECRET; protected routes enforce roles server-side; ids cast with ObjectId in try/catch; no raw user input in Mongo filters (whitelisted stream/group); login is rate-limited."
+  ],
+  "verification": [
+    "python -m json.tool backend/composer.json  (expect: prints formatted JSON, no error)",
+    "python -m json.tool backend/seed/courses.json  (expect: prints formatted JSON, no error)",
+    "Manual review: for each backend .php file, confirm balanced braces/quotes, valid class/method signatures, namespace App matching the file path, and use-imports in index.php for every referenced class.",
+    "Cross-check: enumerate DESIGN.md section 12 endpoints and confirm each has a route line in backend/public/index.php and a matching method in the named controller class.",
+    "If php becomes available: run php -l on every .php file under backend/ and confirm 'No syntax errors'."
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

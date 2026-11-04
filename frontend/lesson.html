@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson — A+ Freshman Tutorial</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- KaTeX for math formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+</head>
+<body>
+  <div id="loading" hidden>Waking up the server, this can take up to a minute on the first visit.</div>
+  <div id="navbar"></div>
+
+  <div class="container" style="padding-top:1.5rem;padding-bottom:3rem">
+    <div class="lesson-layout">
+      <!-- Sidebar: lesson list -->
+      <aside class="lesson-sidebar">
+        <h3 style="font-size:.95rem;margin-bottom:.75rem;color:var(--text-muted)">Lessons</h3>
+        <ul class="lesson-list" id="lessonList"></ul>
+        <div id="progressWrap" class="mt-2" hidden>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progressBar" style="width:0%"></div>
+          </div>
+          <p class="text-muted" style="font-size:.8rem;margin-top:.3rem" id="progressLabel">0% complete</p>
+        </div>
+      </aside>
+
+      <!-- Main: lesson content -->
+      <main>
+        <div id="lessonContent" class="lesson-content">
+          <div class="spinner"></div>
+        </div>
+        <div class="flex gap-1 mt-2" id="lessonActions" hidden>
+          <button class="btn btn-primary"   id="completeBtn">Mark as Complete</button>
+          <button class="btn btn-outline"   id="playgroundBtn" hidden>Open in Playground</button>
+          <button class="btn btn-secondary" id="quizBtn"      hidden>Take Quiz</button>
+          <button class="btn btn-outline"   id="prevBtn">← Previous</button>
+          <button class="btn btn-outline"   id="nextBtn">Next →</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 <strong>Haymanot Andarg Wubale</strong>. All rights reserved.</p>
+    <p class="footer-tagline">Built with <span class="heart">&#10084;</span> in Bahir Dar, Ethiopia</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/lesson.js"></script>
+</body>
+</html>

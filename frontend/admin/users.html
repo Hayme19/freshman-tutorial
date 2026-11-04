@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users — A+ Freshman Tutorial</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div id="loading" hidden>Waking up the server, this can take up to a minute on the first visit.</div>
+  <div id="navbar"></div>
+
+  <div class="container" style="padding-top:2rem;padding-bottom:3rem">
+    <h1 class="section-title">Manage Users</h1>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-1 mb-2" style="align-items:flex-end">
+      <div class="form-group" style="margin:0;flex:1;min-width:160px">
+        <label for="searchQ">Search</label>
+        <input type="text" id="searchQ" placeholder="Name or email…">
+      </div>
+      <div class="form-group" style="margin:0">
+        <label for="filterRole">Role</label>
+        <select id="filterRole">
+          <option value="">All roles</option>
+          <option value="student">Student</option>
+          <option value="tutor">Tutor</option>
+          <option value="instructor">Instructor</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" id="loadBtn">Load</button>
+    </div>
+
+    <div id="alertBox"></div>
+    <div class="table-wrap">
+      <table class="data-table" id="usersTable">
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Role</th><th>Stream</th><th>Active</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 <strong>Haymanot Andarg Wubale</strong>. All rights reserved.</p>
+    <p class="footer-tagline">Built with <span class="heart">&#10084;</span> in Bahir Dar, Ethiopia</p>
+  </footer>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin/users.js"></script>
+</body>
+</html>

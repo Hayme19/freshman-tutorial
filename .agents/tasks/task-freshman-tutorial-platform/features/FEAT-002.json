@@ -1,0 +1,43 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Complete static HTML5/CSS3/vanilla-JS frontend under frontend/ per DESIGN.md sections 13-14: all 13 HTML pages (index, login, register, courses, lesson, playground, quiz, dashboard, forum, certificate + admin/users, admin/courses, admin/reports), responsive accessible low-bandwidth css/style.css, _headers with strict CSP, and all JS modules (config, api, auth, courses, playground, dashboard, lesson, quiz, forum, certificate, admin/*). Every page works end-to-end against the backend API contract (DESIGN section 12). NEVER use innerHTML with user/API content - use textContent/createElement. Depends on FEAT-001 (backend API contract); read context.json and the existing backend controllers/routes to align endpoint paths and response shapes.",
+  "status": "pending",
+  "steps": [
+    "Create frontend/js/config.js: const API_BASE_URL = 'https://your-api.onrender.com/api' (documented placeholder).",
+    "Create frontend/js/api.js: the DESIGN 11.6 fetch helper verbatim in spirit - api(path, method, body) with an Authorization Bearer header from localStorage token, a loading banner element id 'loading' shown after 3s with text 'Waking up the server, this can take up to a minute on the first visit.', 401 clears token + redirects to login.html, returns parsed JSON.",
+    "Create frontend/js/auth.js: register/login/logout logic, token storage in localStorage, current-user cache, role guards (requireRole), and a role-adaptive navbar builder (links differ for student/instructor/tutor/admin/guest). Expose getCurrentUser().",
+    "Create frontend/css/style.css: responsive mobile-first, accessible (sufficient contrast, focus styles), low-bandwidth (minimal), clean cards/forms/navbar; use hand-written CSS (no heavy framework) to stay light.",
+    "Create frontend/_headers (Netlify): default-src 'self'; script-src 'self' plus the Chart.js and KaTeX CDN origins; style-src 'self' plus those CDNs; connect-src 'self' https://your-api.onrender.com; frame-src 'self'; img-src 'self' data: https:.",
+    "Create frontend/index.html: landing + stream picker (Natural/Social) saving choice to localStorage and routing to register/login; links config.js, api.js, auth.js; includes a #loading banner div and a navbar container.",
+    "Create frontend/login.html and frontend/register.html: forms calling /auth/login and /auth/register, store JWT, redirect by role (admin -> admin/reports.html, instructor -> admin/courses.html, student -> courses.html); link auth.js.",
+    "Create frontend/courses.html and frontend/js/courses.js: list courses, filter by stream/group/keyword per DESIGN 11.7 (textContent, never innerHTML); guests see only published; logged-in students see their stream's courses with an Enroll button (POST /enrollments); cards link to lesson.html?course=<id>.",
+    "Create frontend/lesson.html and frontend/js/lesson.js: load lessons for a course (GET /courses/{id}/lessons), render lesson text safely (textContent; support KaTeX for $...$ and $$...$$ via KaTeX render), show codeExample with an 'Open in Playground' button (passes code to playground.html), sandboxed video embed, a 'Mark complete' button (POST /progress/complete-lesson), prev/next lesson navigation.",
+    "Create frontend/playground.html and frontend/js/playground.js: three textareas (HTML/CSS/JS) + a Run button building the preview iframe via srcdoc with sandbox='allow-scripts' (DESIGN 14 module 5); a 'Load from lesson' option reading code passed from lesson.html; never executes PHP server-side.",
+    "Create frontend/quiz.html and frontend/js/quiz.js: fetch quiz (GET /quizzes/{id}), render questions (MC radio / TF), submit answers (POST /quizzes/{id}/attempt), show graded score and correct/incorrect.",
+    "Create frontend/dashboard.html and frontend/js/dashboard.js: student progress per course using GET /progress/me rendered with Chart.js (e.g., progress bar/doughnut per course); load Chart.js via CDN.",
+    "Create frontend/forum.html and frontend/js/forum.js: per-course discussion - list posts (GET /forum?courseId=), create post (POST /forum), reply (POST /forum/{id}/reply); all user content via textContent only.",
+    "Create frontend/certificate.html and frontend/js/certificate.js: fetch certificate by id (GET /certificates/{id}), render printable certificate, print button (window.print).",
+    "Create frontend/admin/users.html and frontend/js/admin/users.js: list users (GET /admin/users paginated/filtered), change role (PUT /admin/users/{id}/role); admin only.",
+    "Create frontend/admin/courses.html and frontend/js/admin/courses.js: create/edit/delete courses (POST/PUT/DELETE /courses and /courses/{id}) and manage lessons (POST/PUT /lessons); instructor/admin.",
+    "Create frontend/admin/reports.html and frontend/js/admin/reports.js: fetch GET /reports/summary and render enrollment/completion/quiz/active-users charts (Chart.js); admin+instructor.",
+    "Run frontend verification: for each HTML page confirm it links the correct css/js files and every element id referenced by its page JS exists in the HTML (e.g., #loading, #courses, navbar container, form field ids); confirm folder structure matches DESIGN section 13 frontend/ tree. Fix any mismatches."
+  ],
+  "acceptance_criteria": [
+    "All frontend files exist and the on-disk tree matches DESIGN.md section 13 frontend/ structure.",
+    "Every HTML page links the css/js files it needs and every element id referenced by its JS exists in that HTML.",
+    "No frontend JS uses innerHTML with user/API content; all dynamic content uses textContent or createElement (lesson/forum/quiz/courses/admin).",
+    "All API calls target endpoints that exist in the backend (FEAT-001) router with matching paths and the {success,data,message} response shape.",
+    "Pages are responsive/accessible: viewport meta, focus styles, sufficient contrast, mobile-friendly layouts; _headers sets a strict CSP allowing the used CDN origins and the API connect-src.",
+    "Playground uses sandbox='allow-scripts' iframe via srcdoc; KaTeX loaded via CDN for math; Chart.js loaded via CDN for dashboard/reports."
+  ],
+  "verification": [
+    "For each frontend/*.html and frontend/admin/*.html: confirm the link/script tags reference files that exist and that every document.getElementById('...') / querySelector('#...') id in the matching js file is present in that HTML.",
+    "Search the frontend js files for 'innerHTML' and confirm none is used with API/user content; dynamic content must use textContent/createElement.",
+    "Confirm frontend/_headers CSP includes 'self', the Chart.js CDN origin (e.g., https://cdn.jsdelivr.net), the KaTeX CDN origin, and connect-src to https://your-api.onrender.com.",
+    "Confirm the folder structure under frontend/ matches DESIGN.md section 13 (index/login/register/courses/lesson/playground/quiz/dashboard/forum/certificate .html, admin/ dir, css/style.css, js/ dir with all modules, _headers).",
+    "Opening each HTML in a browser is not possible here; instead statically confirm each page's script wiring and element ids as above."
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

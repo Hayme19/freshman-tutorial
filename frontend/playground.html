@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Playground — A+ Freshman Tutorial</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="loading" hidden>Waking up the server, this can take up to a minute on the first visit.</div>
+  <div id="navbar"></div>
+
+  <div style="padding:0.75rem 1rem;border-bottom:1px solid var(--border);background:var(--white);display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+    <strong>Live Playground</strong>
+    <button class="btn btn-primary btn-sm" id="runBtn">▶ Run</button>
+    <button class="btn btn-outline btn-sm" id="clearBtn">Clear</button>
+    <span class="text-muted" style="font-size:.8rem">Code runs entirely in your browser — safe &amp; sandboxed.</span>
+  </div>
+
+  <div class="playground-wrap" style="padding:0.5rem 1rem">
+    <div class="editor-panels">
+      <div class="editor-panel">
+        <label for="htmlEditor">HTML</label>
+        <textarea id="htmlEditor" spellcheck="false" placeholder="<!-- HTML here -->"></textarea>
+      </div>
+      <div class="editor-panel">
+        <label for="cssEditor">CSS</label>
+        <textarea id="cssEditor" spellcheck="false" placeholder="/* CSS here */"></textarea>
+      </div>
+      <div class="editor-panel">
+        <label for="jsEditor">JavaScript</label>
+        <textarea id="jsEditor" spellcheck="false" placeholder="// JavaScript here"></textarea>
+      </div>
+    </div>
+
+    <!-- sandbox="allow-scripts" per DESIGN §14 — no allow-same-origin so it cannot reach the parent -->
+    <iframe id="preview-frame" sandbox="allow-scripts" title="Preview" aria-label="Code preview"></iframe>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/playground.js"></script>
+</body>
+</html>

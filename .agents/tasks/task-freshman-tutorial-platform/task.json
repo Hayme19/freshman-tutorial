@@ -1,0 +1,7 @@
+{
+  "task_id": "task-freshman-tutorial-platform",
+  "task_description": "Build the complete Freshman Tutorial Platform: a PHP 8.2 REST API backend (Render/Docker) + static HTML5/CSS3/JS frontend (Netlify) + MongoDB Atlas, with real seed sample content, per DESIGN.md.",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses — A+ Freshman Tutorial</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Page-specific styles ─────────────────────────────── */
+
+    /* Hero strip */
+    .courses-hero {
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #0ea5e9 100%);
+      color: #fff;
+      padding: 3rem 1rem 2.5rem;
+      text-align: center;
+    }
+    .courses-hero h1 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); margin-bottom: .6rem; }
+    .courses-hero p  { opacity: .88; max-width: 560px; margin: 0 auto; font-size: 1rem; }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: .9rem 1rem;
+    }
+    .stat-pill { text-align: center; }
+    .stat-pill strong { display: block; font-size: 1.5rem; color: var(--primary); line-height: 1; }
+    .stat-pill span   { font-size: .78rem; color: var(--text-muted); }
+
+    /* Filter bar */
+    .filter-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: .9rem 1rem;
+      position: sticky;
+      top: 57px;   /* below navbar */
+      z-index: 50;
+    }
+    .filter-bar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .filter-bar .form-group { margin: 0; }
+    .filter-bar input[type=text] { padding: .45rem .75rem; font-size: .9rem; }
+    .filter-bar select          { padding: .45rem .75rem; font-size: .9rem; }
+
+    /* Stream tabs */
+    .stream-tabs {
+      display: flex;
+      gap: .5rem;
+    }
+    .stream-tab {
+      padding: .4rem 1rem;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-size: .85rem;
+      font-weight: 500;
+      transition: all .18s;
+    }
+    .stream-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .stream-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* Course grid */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      padding: 2rem 1rem;
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+
+    /* Enhanced course card */
+    .ccard {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+      transition: transform .2s, box-shadow .2s;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .ccard:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(37,99,235,.13);
+      text-decoration: none;
+      color: var(--text);
+    }
+    .ccard-top {
+      padding: 1.25rem 1.25rem .75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: .9rem;
+    }
+    .ccard-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: .6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .ccard-info { flex: 1; min-width: 0; }
+    .ccard-info h3 { font-size: 1rem; margin-bottom: .25rem; line-height: 1.35; }
+    .ccard-info .code { font-size: .72rem; color: var(--text-muted); font-family: monospace; }
+    .ccard-body { padding: 0 1.25rem .75rem; font-size: .87rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
+    .ccard-footer {
+      padding: .75rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .ccard-badges { display: flex; gap: .35rem; flex-wrap: wrap; }
+
+    /* Group colour themes */
+    .ccard[data-group="common"]  .ccard-icon { background: #dbeafe; color: #1e40af; }
+    .ccard[data-group="natural"] .ccard-icon { background: #d1fae5; color: #065f46; }
+    .ccard[data-group="social"]  .ccard-icon { background: #fef3c7; color: #92400e; }
+    .ccard[data-group="digital"] .ccard-icon { background: #ede9fe; color: #5b21b6; }
+
+    .ccard[data-group="common"]  { border-top: 3px solid #2563eb; }
+    .ccard[data-group="natural"] { border-top: 3px solid #10b981; }
+    .ccard[data-group="social"]  { border-top: 3px solid #f59e0b; }
+    .ccard[data-group="digital"] { border-top: 3px solid #8b5cf6; }
+
+    /* Skeleton loader */
+    .skeleton-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      padding: 1.25rem;
+      overflow: hidden;
+    }
+    .skeleton-line {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 4px;
+      height: 14px;
+      margin-bottom: 10px;
+    }
+    .skeleton-line.wide  { width: 80%; }
+    .skeleton-line.short { width: 40%; }
+    .skeleton-icon {
+      width: 48px; height: 48px; border-radius: .6rem;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* Empty / error state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      grid-column: 1 / -1;
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-state h3 { font-size: 1.2rem; margin-bottom: .5rem; }
+
+    /* Section label */
+    .section-label {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 1.5rem 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .section-label h2 { font-size: 1.1rem; font-weight: 700; }
+    .section-label .count {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 99px;
+      padding: .15rem .6rem;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    /* Enroll btn inside card */
+    .enroll-btn {
+      padding: .35rem .9rem;
+      font-size: .82rem;
+      border-radius: 99px;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" hidden>Waking up the server — this can take up to a minute on the first visit.</div>
+  <div id="navbar"></div>
+
+  <!-- Hero -->
+  <div class="courses-hero">
+    <h1>📚 Find Your Course</h1>
+    <p>All 16 freshman courses — structured lessons, quizzes, exercises and progress tracking in one place.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-pill"><strong>16</strong><span>Courses</span></div>
+    <div class="stat-pill"><strong>2</strong><span>Streams</span></div>
+    <div class="stat-pill"><strong>7</strong><span>Common courses</span></div>
+    <div class="stat-pill"><strong>1</strong><span>Digital skills track</span></div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <div class="filter-bar-inner">
+      <!-- Search -->
+      <div class="form-group" style="flex:1;min-width:200px">
+        <input type="text" id="searchQ" placeholder="🔍  Search courses…" aria-label="Search courses">
+      </div>
+
+      <!-- Stream tabs -->
+      <div style="display:flex;flex-direction:column;gap:.25rem">
+        <span style="font-size:.75rem;color:var(--text-muted);font-weight:500">Stream</span>
+        <div class="stream-tabs" id="streamTabs">
+          <button class="stream-tab active" data-stream="">All</button>
+          <button class="stream-tab" data-stream="natural">🔬 Natural</button>
+          <button class="stream-tab" data-stream="social">📖 Social</button>
+        </div>
+      </div>
+
+      <!-- Group filter -->
+      <div class="form-group" style="min-width:140px">
+        <select id="filterGroup" aria-label="Filter by group">
+          <option value="">All groups</option>
+          <option value="common">⚡ Common</option>
+          <option value="natural">🔬 Natural only</option>
+          <option value="social">📖 Social only</option>
+          <option value="digital">💻 Digital / Skills</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section label -->
+  <div class="section-label">
+    <h2 id="sectionLabel">All Courses</h2>
+    <span class="count" id="courseCount">–</span>
+  </div>
+
+  <!-- Course grid -->
+  <div class="course-grid" id="courses">
+    <!-- Skeleton cards shown while loading -->
+    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-line wide"></div><div class="skeleton-line short"></div><div class="skeleton-line wide"></div></div>
+    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-line wide"></div><div class="skeleton-line short"></div><div class="skeleton-line wide"></div></div>
+    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-line wide"></div><div class="skeleton-line short"></div><div class="skeleton-line wide"></div></div>
+    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-line wide"></div><div class="skeleton-line short"></div><div class="skeleton-line wide"></div></div>
+    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-line wide"></div><div class="skeleton-line short"></div><div class="skeleton-line wide"></div></div>
+    <div class="skeleton-card"><div class="skeleton-icon"></div><div class="skeleton-line wide"></div><div class="skeleton-line short"></div><div class="skeleton-line wide"></div></div>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 <strong>Haymanot Andarg Wubale</strong>. All rights reserved.</p>
+    <p class="footer-tagline">Built with <span class="heart">&#10084;</span> in Bahir Dar, Ethiopia</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/courses.js"></script>
+</body>
+</html>

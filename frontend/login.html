@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — A+ Freshman Tutorial</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="loading" hidden>Waking up the server, this can take up to a minute on the first visit.</div>
+  <div id="navbar"></div>
+
+  <div class="container">
+    <div class="form-card">
+      <h2>Welcome back</h2>
+      <div id="alertBox"></div>
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="Your password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%" id="submitBtn">Login</button>
+        <p id="wakeMsg" style="display:none;font-size:.85rem;color:#92400e;background:#fef3c7;border-radius:.4rem;padding:.6rem .9rem;margin-top:.75rem;text-align:center">
+          ⏳ Waking up the server — this can take up to 60 seconds on the first visit. Please wait…
+        </p>
+      </form>
+      <p class="text-muted mt-1 text-center">Don't have an account? <a href="register.html">Register</a></p>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    renderNavbar("login");
+    if (isLoggedIn()) redirectAfterAuth(getUser());
+
+    const form    = document.getElementById("loginForm");
+    const alertBox = document.getElementById("alertBox");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      alertBox.textContent = "";
+      const email    = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alertBox.innerHTML = `<div class="alert alert-error">Please fill in all fields.</div>`;
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Logging in…";
+      const wakeMsg   = document.getElementById("wakeMsg");
+      const wakeTimer = setTimeout(() => { wakeMsg.style.display = "block"; }, 4000);
+
+      let res;
+      try {
+        res = await login(email, password);
+      } catch (err) {
+        clearTimeout(wakeTimer);
+        wakeMsg.style.display = "none";
+        alertBox.innerHTML = `<div class="alert alert-error">Could not reach the server. Please try again in a moment.</div>`;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Login";
+        return;
+      }
+
+      clearTimeout(wakeTimer);
+      wakeMsg.style.display = "none";
+
+      if (!res.success) {
+        alertBox.innerHTML = `<div class="alert alert-error">${res.message || "Login failed."}</div>`;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Login";
+      }
+    });
+  </script>
+</body>
+</html>

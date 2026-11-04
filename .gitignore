@@ -1,0 +1,18 @@
+# Composer dependencies
+backend/vendor/
+
+# Local environment files — NEVER commit real .env
+.env
+backend/.env
+backend-py/.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Logs and editor cruft
+*.log
+.DS_Store
+.vscode/settings.json

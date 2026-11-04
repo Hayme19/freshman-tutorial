@@ -1,0 +1,10 @@
+/*
+  # Strict Content-Security-Policy for all pages
+  # script-src includes CDN origins for Chart.js and KaTeX
+  # connect-src allows the Render API
+  # frame-src allows the sandbox iframe on playground.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://your-api.onrender.com; frame-src 'self'; object-src 'none'; base-uri 'self'
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
