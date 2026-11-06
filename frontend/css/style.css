@@ -100,7 +100,7 @@ pre { background: #1e293b; color: #f8fafc; padding: 1rem; border-radius: var(--r
   color: var(--primary);
   text-decoration: none;
 }
-.navbar-nav { display: flex; gap: 1.25rem; align-items: center; list-style: none; padding: 0; }
+.navbar-nav { display: flex; gap: 1.25rem; align-items: center; list-style: none; padding: 0; flex-wrap: wrap; }
 .navbar-nav a { font-size: 0.9rem; color: var(--text); padding: 0.3rem 0.6rem; border-radius: var(--radius); transition: background var(--transition), color var(--transition); }
 .navbar-nav a:hover { color: var(--primary); text-decoration: none; background: var(--primary-light); }
 .navbar-nav a.active { color: var(--primary); font-weight: 600; background: var(--primary-light); }
