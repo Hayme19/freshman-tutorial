@@ -55,6 +55,16 @@ app.include_router(notifications.router,  prefix=PREFIX)
 def health():
     return {"success": True, "message": "API is running"}
 
+@app.get("/api/seed-now")
+def run_seed():
+    """One-time seed endpoint — call once then it becomes a no-op."""
+    try:
+        import subprocess
+        result = subprocess.run(["python", "seed.py"], capture_output=True, text=True, timeout=120)
+        return {"success": True, "output": result.stdout, "error": result.stderr}
+    except Exception as e:
+        return {"success": False, "message": str(e)}
+
 # ── Global error handler ──────────────────────────────────────────────────────
 from fastapi.exceptions import RequestValidationError
 from fastapi import HTTPException as FastAPIHTTPException
